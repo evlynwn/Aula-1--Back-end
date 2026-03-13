@@ -24,12 +24,20 @@ var readline = require("readline")
 var entradaDeDados = readline.createInterface({
     input: process.stdin,
     output: process.stdout
+
 })
+//Permite a entrada de dados do nome do usuario
+//question -> ultiliza uma função de CALLBACK para devolver o valor digitado
+//CALLBACK -> É uma função particular de um metodo, que é chamado para 
+// encaminhar um conteudo para o desenvolvedor, esse conteudo vem atraves da 
+// variavel no argumento "nomeUsuario"
+
+
 
 entradaDeDados.question("Digite seu nome:", function(nomeUsuario){
     console.log("O nome digitado foi: " + nomeUsuario)
 
     entradaDeDados.question("Digite seu email: ", function(emailUsuario){
-        console.log("O email do usuario  " ${nomeUsuario} é ${emailUsuario}  )
+        console.log(`O email do usuario   ${nomeUsuario} é ${emailUsuario}`  )
     })
 })

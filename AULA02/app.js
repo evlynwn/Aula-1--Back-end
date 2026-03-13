@@ -86,3 +86,4 @@ entradaDeDados.question('Digite o nome do aluno:', function(nome){
         })//Fecha nota2
     })//Fecha nota1
 })//Fecha nome
+let calculos = require('./AULA03/app.js')
