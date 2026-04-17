@@ -4,6 +4,14 @@
  * Autor: Evellyn
  * Versão: 1.0
  */
+//Import da biblioteca para manipular dados no Banco de dados MYSql
+const knex = require('knex')
+
+//Import do arquivo de configuração para acesso ao banco de dados
+const knexDatabaseConfig = require('../../database_config/knexConfing.js')
+
+//Criar conexão 
+const knexConection = knex(knexDatabaseConfig.development)
 
 //Função para inserir um novo filme no barco de dados
 const inserFilme = async function(filme){
@@ -30,6 +38,13 @@ const inserFilme = async function(filme){
     
     '${filme.avaliacao}'
 );`
+//Encaminha para o BD o scriptSQL
+let result = await knexConection.raw(sql)
+
+if(result)
+    return true
+else
+    return false
 
 } 
 
