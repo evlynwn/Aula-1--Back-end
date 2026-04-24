@@ -12,18 +12,21 @@ const DEFAULT_MESSAGE = {
     version:'1.0.4.26',
     status: Boolean,
     status_code: Number,
-    Response: {}
+    response: {}
 }
 
 //Mensagens de ERRO do projeto de filme
-const ERROR_BAD_REQUEST = {status: false, status_code: 400, message:'Não foi possível processar a requisição devido a erros de entrada de dados' }
-const ERROR_INTERNAL_SEVER_MODEL = {status: false, status_code: 500, mensagem:'Não foi possível processar a requisição devido a um erro interno no servidor [MODEL]'}
-const ERROR_CONTENT_TYLE = { status: false, status_code: 415, message: 'Não foi possível processar a requisição, pois o formato de dados encaminhado não é suportado pelo servidor, apenas deve ser utilizado JSON'}
-const ERROR_INTERNAL_SERVER_CONTROLLER = {status: false, status_code: 500, message: 'Não foi possível processar a requisição devido a um erro interno no servidor[CONTROLLER]'}
+const ERROR_BAD_REQUEST =                   {status: false, status_code:    400, message:'Não foi possível processar a requisição devido a erros de entrada de dados' }
+const ERROR_INTERNAL_SEVER_MODEL =          {status: false, status_code:    500, mensagem:'Não foi possível processar a requisição devido a um erro interno no servidor [MODEL]'}
+const ERROR_CONTENT_TYLE =                  { status: false, status_code:   415, message: 'Não foi possível processar a requisição, pois o formato de dados encaminhado não é suportado pelo servidor, apenas deve ser utilizado JSON'}
+const ERROR_INTERNAL_SERVER_CONTROLLER =    {status: false, status_code:    500, message: 'Não foi possível processar a requisição devido a um erro interno no servidor[CONTROLLER]'}
+const ERROR_NOT_FOUND =                     {status: false, status_code:    404, message: 'Não foram encontrados dados para retorno.'}
+
 
 
 //Mensagens de SUCESSO do projeto de filmes
 const SUCCESS_CREATED_ITEM = {status: true, status_code: 201, message: 'Item inserido com sucesso!'}
+const SUCCESS_RESPONSE     = { status: true, status_code: 200}
 
 module.exports= {
     DEFAULT_MESSAGE,
@@ -31,5 +34,7 @@ module.exports= {
     SUCCESS_CREATED_ITEM,
     ERROR_INTERNAL_SEVER_MODEL,
     ERROR_CONTENT_TYLE,
-    ERROR_INTERNAL_SERVER_CONTROLLER
+    ERROR_INTERNAL_SERVER_CONTROLLER,
+    ERROR_NOT_FOUND,
+    SUCCESS_RESPONSE
 }

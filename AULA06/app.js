@@ -24,7 +24,6 @@ app.post('/v1/senai/locadora/filme', bodyParserJson, async function(request, res
 //Recebendo o tipo de dados requisição para validar se é JSON
     let contentType = request.headers['content-type']
 
-    console.log(request.headers)
 
     //Chama a funçãode inserir e encaminha os dados do filme e o contetType
     let result = await controllerFilme.inserirNovoFilme(dados, contentType)
@@ -33,6 +32,25 @@ app.post('/v1/senai/locadora/filme', bodyParserJson, async function(request, res
     response.json(result)
 
 })
+
+app.get('/v1/senai/locadora/filme',async function(request, response){
+
+    let result = await controllerFilme.listarFilmes()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+app.get('/v1/senai/locadora/filme/:id', async function(request, response){
+    let id = request.params.id
+
+    let result = await controllerFilme.buscarFilme(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+
 app.listen(8080, function(){
     console.log('API aguardando novas requisições...')
 })
