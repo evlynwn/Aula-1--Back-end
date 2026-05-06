@@ -14,7 +14,7 @@ const knexDatabaseConfig = require('../../database_config/knexConfig')
 const knexConection = knex(knexDatabaseConfig.development)
 
 //Função para inserir um novo filme no barco de dados
-const inserFilme = async function(filme){
+const insertFilme = async function(filme){
     try {
         
     let sql = `insert into tbl_filme (
@@ -46,7 +46,7 @@ const inserFilme = async function(filme){
 let result = await knexConection.raw(sql)
 
 if(result)
-    return true
+    return result[0].insertId
 else
     return false
 
@@ -59,7 +59,30 @@ else
 
 //Função para atualizar um filme existente no barco de dados
 const updateFilme = async function(filme) {
-    
+    try {
+
+        let sql = `update tbl_filme set
+                    nome            = '${filme.nome}',
+                    sinopse         = '${filme.sinopse}',
+                    capa            = '${filme.capa}',
+                    data_lancamento = '${filme.data_lancamento}',
+                    duracao         = '${filme.duracao}',
+                    valor           = '${filme.valor}',
+                    avaliacao       = if('${filme.avaliacao}' = '', null , '${filme.avaliacao}')
+                    where id        = ${filme.id};`
+
+        let result = await knexConection.raw(sql)
+
+        // Verificando se o result é verdadeiro ou não.
+        if (result) {
+            return true // Retornando o ID gerado no insert
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
 }
 //Função para retornar todos os dados de filme do banco de dados
 const selectAllFilme = async function(){
@@ -106,11 +129,24 @@ const selectByIdFilme = async function(id){
 }
 //Função para excluir um filme filtrando pelo ID
 const deleteFilme = async function(id) {
+    try {
+        let sql = `delete from tbl_filme where id=${id}`
+
+        let result = await knexConection.raw(sql)
+
+        if(result)
+            return true
+        else
+            return false
+    } catch (error) {
+        return false
+        
+    }
     
 }
 
 module.exports = {
-    inserFilme,
+    insertFilme,
     updateFilme,
     selectAllFilme,
     selectByIdFilme,

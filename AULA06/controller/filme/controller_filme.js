@@ -17,12 +17,12 @@ const inserirNovoFilme = async function(filme, contentType){
 
         //Criar uma copia dos JSON do arquivo de cofiguração de mensagem
         let customMessage = JSON.parse(JSON.stringify(configMessagens))
-
+        
         try {
             
             
             if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
-
+                console.log(contentType)
             
 
                 let validar = await validarDados(filme)
@@ -35,12 +35,17 @@ const inserirNovoFilme = async function(filme, contentType){
 
                 }else{
                 //Encaminha os dados do Filme para o DAO inserir no BD
-                    let result = await filmeDAO.inserFilme(filme)
+                    let result = await filmeDAO.insertFilme(await tratarDdados(filme))
 
                     if(result){ //201
+
+                        //Cria o ID no JSON do filme e adiciona o ID gerado no DAO
+                        filme.id = result
+
                         customMessage.DEFAULT_MESSAGE.status = customMessage.SUCCESS_CREATED_ITEM.status
                         customMessage.DEFAULT_MESSAGE.status_code = customMessage.SUCCESS_CREATED_ITEM.status_code
                         customMessage.DEFAULT_MESSAGE.message = customMessage.SUCCESS_CREATED_ITEM.message
+                        customMessage.DEFAULT_MESSAGE.response = filme
 
                         return customMessage.DEFAULT_MESSAGE//201
 
@@ -50,7 +55,7 @@ const inserirNovoFilme = async function(filme, contentType){
                 }
 
             }else{
-                return configMessagens.ERROR_CONTENT_TYLE // 415
+                return configMessagens.ERROR_CONTENT_TYPE // 415
             }
         } catch (error) {
             return customMessage.ERROR_INTERNAL_SERVER_CONTROLLER // 500 (controller)
@@ -61,7 +66,70 @@ const inserirNovoFilme = async function(filme, contentType){
 }
 
 //Função para atualizar um filme existente
-const atualizarFilme = async function(){
+const atualizarFilme = async function(filme, id, contentType){
+
+    let customMessage = JSON.parse(JSON.stringify(configMessagens))
+
+   
+
+    try {
+        // Validando o content type, para saber se é um JSON que está sendo enviado.
+        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+
+            //Chama a função para buscar o filme e validar se o id está correto
+            // Se o ID existe no Banco de Dados e se o filme existe.
+            let resultBuscarFilme = await buscarFilme(id)
+            if (resultBuscarFilme.status) {
+                
+                // Validando se JSON está chegando corretamente.
+                if (resultBuscarFilme) {
+
+                    // Chama a função para validar os dados dos Filmes para ver se estão corretos
+                    let validar = await validarDados(filme)
+                    if (!validar) {
+
+                        // Adiciona um atributo id no JSON de filme, para enviar para o DAO um único objeto, 
+                        // ja que o body iria mandar os dois de formas separados para o DAO.
+                        filme.id = Number(id)
+
+                        // Chama a função para atualizar o filme no banco de dados.
+                        let result = await filmeDAO.updateFilme(await tratarDdados(filme))
+                        if (result) {
+
+                            customMessage.DEFAULT_MESSAGE.status = customMessage.SUCCESS_UPDATED_ITEM.status
+                            customMessage.DEFAULT_MESSAGE.status_code = customMessage.SUCCESS_UPDATED_ITEM.status_code
+                            customMessage.DEFAULT_MESSAGE.message = customMessage.SUCCESS_UPDATED_ITEM.message
+                            customMessage.DEFAULT_MESSAGE.response = filme
+                            return customMessage.DEFAULT_MESSAGE //RETORNA 200
+
+                        } else {
+                            return customMessage.ERROR_INTERNAL_SERVER_MODEL // RETORNA 500 (MODEL)
+                        }
+
+
+                    } else { // fecha if sobre a validação
+                        return validar // RETORNA 400 DA VALIDAÇÃO DOS CAMPOS DO BANCO DE DADOS!
+                    }
+
+                } else { // fecha if sobre o buscarFilme(campos obrigatórios)
+                    return customMessage.ERROR_BAD_REQUEST // RETORNA 400
+                }
+
+
+            } else { //fecha if o buscarFilme(id)
+                return resultBuscarFilme // RETORNA 400(ID INVÁLIDO) ou 404(NÃO ENCONTRADO) ou 500(MODEL OU CONTROLLER)
+            }
+
+
+        } else { // Fecha if content_type
+            return customMessage.ERROR_CONTENT_TYPE // RETORNA 415 
+        }
+
+    } catch (error) {
+        return customMessage.ERROR_INTERNAL_SERVER_CONTROLLER // RETORNA 500 (CONTROLLER) 
+    }
+
+
 }
 
 //Função para retornar todos os filmes existentes
@@ -137,7 +205,36 @@ const buscarFilme = async function(id){
 }
 
 //Função para excluir um filme
-const excluirFilmes = async function(){
+const excluirFilmes = async function(id){
+    let customMessage = JSON.parse(JSON.stringify(configMessagens))
+
+    try {
+        //Chama a função de buscar filme para validar se o filme existe
+       let resultBuscarFilme = await buscarFilme(id)
+       if(resultBuscarFilme.status){
+
+        if (resultBuscarFilme) {
+
+            let result = await filmeDAO.deleteFilme(id)
+            
+            if(result)
+                customMessage.DEFAULT_MESSAGE.status        = customMessage.SUCCESS_DELETED_ITEM.status
+                customMessage.DEFAULT_MESSAGE.status_code   = customMessage.SUCCESS_DELETED_ITEM.status_code
+                customMessage.DEFAULT_MESSAGE.message       = customMessage.SUCCESS_DELETED_ITEM.message
+
+            return customMessage.DEFAULT_MESSAGE //200
+
+        } else {
+            return customMessage.ERROR_INTERNAL_SERVER_MODEL // Retorna 500
+        }
+
+       }else{
+        return resultBuscarFilme // 400 ou 404
+       }
+    } catch (error) {
+        return customMessage.ERROR_INTERNAL_SERVER_CONTROLLER // 500 Controller
+        
+    }
 }
 
 //Função para validar os dados de cadastro do Filme
@@ -174,9 +271,23 @@ const validarDados = async function(filme){
         customMessage.ERROR_BAD_REQUEST.field = '[AVALIAÇÃO] INVÁLIDO'
         return customMessage.ERROR_BAD_REQUEST
     }else{
+        
         return false
     }
 
+}
+
+const tratarDdados = async function (filme) {
+    //
+    filme.nome = filme.nome.replaceAll("'","")
+    filme.sinopse = filme.sinopse.replaceAll("'","")
+    filme.capa = filme.capa.replaceAll("'","")
+    filme.data_lancamento = filme.data_lancamento.replaceAll("'","")
+    filme.duracao = filme.duracao.replaceAll("'","")
+    filme.valor = filme.valor.replaceAll("'","")
+    filme.avaliacao = filme.avaliacao.replaceAll("'","")
+
+    return filme
 }
 
 module.exports = {
