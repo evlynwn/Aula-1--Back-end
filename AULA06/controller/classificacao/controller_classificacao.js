@@ -1,0 +1,1 @@
+const classificacaoDAO = require ('../../model/DAO/classificacao/classificacao')
