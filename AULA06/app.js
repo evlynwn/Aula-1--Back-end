@@ -17,6 +17,7 @@ const corsOptions = {
 app.use(cors(corsOptions))
 
 const controllerFilme = require('./controller/filme/controller_filme.js')
+const controllerClassificacao = require('./controller/classificacao/controller_classificacao.js')
 
 app.post('/v1/senai/locadora/filme', bodyParserJson, async function(request, response){
     let dados = request.body
@@ -68,8 +69,6 @@ app.put('/v1/senai/locadora/filme/:id', bodyParserJson, async function(request, 
     response.json(result)
 })
 
-
-
 app.delete('/v1/senai/locadora/filme/:id', async function (request,response) {
     let id = request.params.id
 
@@ -78,6 +77,23 @@ app.delete('/v1/senai/locadora/filme/:id', async function (request,response) {
     response.status(result.status_code)
     response.json(result)
 })
+
+
+
+app.post('/v1/senai/locadora/classificacao', bodyParserJson, async function (request, response) {
+    let dados = request.body
+    let contentType = request.headers['content-type']
+
+    let result = await controllerClassificacao.inserirClassificacao(dados,contentType)
+    
+    response.status(result.status_code)
+
+    response.json(result)
+    
+})
+
+
+
 
 
 app.listen(8080, function(){
