@@ -8,7 +8,10 @@
 const configMessagens = require('../modolo/configMenssagens.js')
 
 //Import do arquivo do DAO para manipular os dados de filme no Banco de dados
-const filmeDAO =require('../../model/DAO/filme/filme.js')
+const filmeDAO = require('../../model/DAO/filme/filme.js')
+
+//Import das Controllers
+const controllerClassificacao = require('../classificacao/controller_classificacao.js')
 
 //Função para inserir novo filme
 const inserirNovoFilme = async function(filme, contentType){
@@ -146,6 +149,23 @@ const listarFilmes = async function(){
             //Validação para verificar se o conteúdo do array tem dados de
             // retorno ou se esta vazio
             if(result.length > 0){
+
+                //Manipulação dos dados da Classificação
+                //Percorre o Array de filmes
+                for(filme of result){
+                    //Busca na controller da classificação o ID referente a FK da classificação
+                    let resultClassificacao = await controllerClassificacao.buscarClassificacao(filme.id_classificacao)
+
+                    //Se encontrar o ID
+                    if(resultClassificacao.status){
+                        //Adicionar um atributo classificação no JSON do filme e colocar o resultado com os dados da classificação 
+                        filme.id_classificacao = resultClassificacao.response.classificacao 
+                        //Apaga o id_classificação do JSON de filme
+                        delete filme.id_classificacao
+                    }
+
+                }
+
                 customMessage.DEFAULT_MESSAGE.status = customMessage.SUCCESS_RESPONSE.status
                 customMessage.DEFAULT_MESSAGE.status_code = customMessage.SUCCESS_RESPONSE.status_code
                 customMessage.DEFAULT_MESSAGE.response.count = result.length
@@ -188,6 +208,7 @@ const buscarFilme = async function(id){
                         customMessage.DEFAULT_MESSAGE.response.filme = result
 
                         return customMessage.DEFAULT_MESSAGE
+                        
                     }else{
                         return customMessage.ERROR_NOT_FOUND //404
                     }
@@ -270,6 +291,14 @@ const validarDados = async function(filme){
     }else if(filme.avaliacao == undefined || isNaN(filme.avaliacao) || filme.avaliacao.length > 3){
         customMessage.ERROR_BAD_REQUEST.field = '[AVALIAÇÃO] INVÁLIDO'
         return customMessage.ERROR_BAD_REQUEST
+
+
+        //Validação para a FK da classificação
+    }else if(filme.id_classificacao == undefined || filme.id_classificacao == '' || filme.id_classificacao == null || isNaN(filme.id_classificacao) || filme.id_classificacao){
+        customMessage.ERROR_BAD_REQUEST.field = '[ID_CLASSIFICACAO] INVÁLIDO'
+        return customMessage.ERROR_BAD_REQUEST
+
+
     }else{
         
         return false

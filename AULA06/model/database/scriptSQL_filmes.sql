@@ -35,7 +35,7 @@ insert into tbl_filme (
     valor,
     avaliacao
 ) values (
-	'Super Mario Galaxy: O Filme',
+	replace("Super Mario Galaxy: O Filme", "'", ""),
     
     'Uma nova aventura leva Mario a enfrentar um inédito e ameaçador super vilão. Em Super Mario Galaxy: O Filme, 
     o bigodudo encanador italiano e seus aliados embarcam numa aventura galáctica repleta de ação e momentos 
@@ -49,9 +49,27 @@ insert into tbl_filme (
     
     '50.60',
     
-    '3'
+    if('',null,2)
 );
 
 select * from tbl_filme order by id desc;
+select * from tbl_filme where id = 36;
 
 delete from tbl_filme where id > 0;
+
+create table tbl_classificacao (
+	id int not null auto_increment primary key,
+	classificacao varchar(10)
+);
+
+desc tbl_filme;
+delete from tbl_filme;
+select * from tbl_filme;
+
+select * from tbl_classificacao order by id desc;
+
+alter table tbl_filme
+	add column id_classificacao int not null,
+    add constraint FK_CLASSIFICACAO_FILME
+		foreign key (id_classificacao)
+        references tbl_classificacao(id);
