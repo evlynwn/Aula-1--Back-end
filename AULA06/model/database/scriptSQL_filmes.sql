@@ -55,16 +55,24 @@ insert into tbl_filme (
 select * from tbl_filme order by id desc;
 select * from tbl_filme where id = 36;
 
-delete from tbl_filme where id > 0;
+delete from tbl_filme where id > 1;
 
 create table tbl_classificacao (
 	id int not null auto_increment primary key,
 	classificacao varchar(10)
 );
 
+insert into tbl_classificacao(
+	classificacao
+)values(
+	"16"
+);
+
+desc tbl_classificacao;
+
 desc tbl_filme;
 delete from tbl_filme;
-select * from tbl_filme;
+select * from tbl_classificacao;
 
 select * from tbl_classificacao order by id desc;
 
