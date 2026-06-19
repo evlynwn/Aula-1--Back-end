@@ -209,9 +209,6 @@ const excluirClassificacao = async function (id) {
         
     }
 
-
-    
-
 }
 const validarDados = async function (classificacao) {
     let customMessage = JSON.parse(JSON.stringify(configMenssagens))
