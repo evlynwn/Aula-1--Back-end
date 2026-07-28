@@ -1,7 +1,7 @@
 const configMenssagens = require('../modulo/configMenssagens.js')
-const atividadeDAO = require('../../model/DAO/atividade/atividade.js')
+const nacionalidadeDAO = require('../../model/DAO/nacionalidade/nacionalidade.js')
 
-const inserirAtividade = async function(atividade, contentType){
+const inserirNacionalidade = async function(nacionalidade, contentType){
 
     let customMessage = JSON.parse(JSON.stringify(configMenssagens))
 
@@ -9,20 +9,20 @@ const inserirAtividade = async function(atividade, contentType){
 
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            let validar = await validarDados(atividade)
+            let validar = await validarDados(nacionalidade)
 
             if(!validar){
 
-                let result = await atividadeDAO.inserirAtividade(await tratarDados(atividade))
+                let result = await nacionalidadeDAO.inserirNacionalidade(await tratarDados(nacionalidade))
 
                 if(result){
 
-                    atividade.id = result
+                    nacionalidade.id = result
 
                     customMessage.DEFAULT_MESSAGE.status = customMessage.SUCCESS_CREATED_ITEM.status
                     customMessage.DEFAULT_MESSAGE.status_code = customMessage.SUCCESS_CREATED_ITEM.status_code
                     customMessage.DEFAULT_MESSAGE.message = customMessage.SUCCESS_CREATED_ITEM.message
-                    customMessage.DEFAULT_MESSAGE.response = atividade
+                    customMessage.DEFAULT_MESSAGE.response = nacionalidade
 
                     return customMessage.DEFAULT_MESSAGE
 
@@ -44,13 +44,13 @@ const inserirAtividade = async function(atividade, contentType){
 
 }
 
-const listarAtividade = async function(){
+const listarNacionalidade = async function(){
 
     let customMessage = JSON.parse(JSON.stringify(configMenssagens))
 
     try{
 
-        let result = await atividadeDAO.selectAllAtividade()
+        let result = await nacionalidadeDAO.selectAllNacionalidade()
 
         if(result){
 
@@ -59,7 +59,7 @@ const listarAtividade = async function(){
                 customMessage.DEFAULT_MESSAGE.status = customMessage.SUCCESS_RESPONSE.status
                 customMessage.DEFAULT_MESSAGE.status_code = customMessage.SUCCESS_RESPONSE.status_code
                 customMessage.DEFAULT_MESSAGE.response.count = result.length
-                customMessage.DEFAULT_MESSAGE.response.atividade = result
+                customMessage.DEFAULT_MESSAGE.response.nacionalidade = result
 
                 return customMessage.DEFAULT_MESSAGE
 
@@ -77,7 +77,7 @@ const listarAtividade = async function(){
 
 }
 
-const atualizarAtividade = async function(id, atividade, contentType){
+const atualizarNacionalidade = async function(id, nacionalidade, contentType){
 
     let customMessage = JSON.parse(JSON.stringify(configMenssagens))
 
@@ -85,24 +85,24 @@ const atualizarAtividade = async function(id, atividade, contentType){
 
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            let resultBuscarAtividade = await buscarAtividade(id)
+            let resultBuscarNacionalidade = await buscarNacionalidade(id)
 
-            if(resultBuscarAtividade.status){
+            if(resultBuscarNacionalidade.status){
 
-                let validar = await validarDados(atividade)
+                let validar = await validarDados(nacionalidade)
 
                 if(!validar){
 
-                    atividade.id = Number(id)
+                    nacionalidade.id = Number(id)
 
-                    let result = await atividadeDAO.updateAtividade(await tratarDados(atividade))
+                    let result = await nacionalidadeDAO.updateNacionalidade(await tratarDados(nacionalidade))
 
                     if(result){
 
                         customMessage.DEFAULT_MESSAGE.status = customMessage.SUCCESS_UPDATED_ITEM.status
                         customMessage.DEFAULT_MESSAGE.status_code = customMessage.SUCCESS_UPDATED_ITEM.status_code
                         customMessage.DEFAULT_MESSAGE.message = customMessage.SUCCESS_UPDATED_ITEM.message
-                        customMessage.DEFAULT_MESSAGE.response = atividade
+                        customMessage.DEFAULT_MESSAGE.response = nacionalidade
 
                         return customMessage.DEFAULT_MESSAGE
 
@@ -115,7 +115,7 @@ const atualizarAtividade = async function(id, atividade, contentType){
                 }
 
             }else{
-                return resultBuscarAtividade
+                return resultBuscarNacionalidade
             }
 
         }else{
@@ -128,7 +128,7 @@ const atualizarAtividade = async function(id, atividade, contentType){
 
 }
 
-const buscarAtividade = async function(id){
+const buscarNacionalidade = async function(id){
 
     let customMessage = JSON.parse(JSON.stringify(configMenssagens))
 
@@ -141,7 +141,7 @@ const buscarAtividade = async function(id){
 
         }else{
 
-            let result = await atividadeDAO.selectByIdAtividade(id)
+            let result = await nacionalidadeDAO.selectByIdNacionalidade(id)
 
             if(result){
 
@@ -149,7 +149,7 @@ const buscarAtividade = async function(id){
 
                     customMessage.DEFAULT_MESSAGE.status = customMessage.SUCCESS_RESPONSE.status
                     customMessage.DEFAULT_MESSAGE.status_code = customMessage.SUCCESS_RESPONSE.status_code
-                    customMessage.DEFAULT_MESSAGE.response.atividade = result
+                    customMessage.DEFAULT_MESSAGE.response.nacionalidade = result
 
                     return customMessage.DEFAULT_MESSAGE
 
@@ -169,17 +169,17 @@ const buscarAtividade = async function(id){
 
 }
 
-const excluirAtividade = async function(id){
+const excluirNacionalidade = async function(id){
 
     let customMessage = JSON.parse(JSON.stringify(configMenssagens))
 
     try{
 
-        let resultBuscarAtividade = await buscarAtividade(id)
+        let resultBuscarNacionalidade = await buscarNacionalidade(id)
 
-        if(resultBuscarAtividade.status){
+        if(resultBuscarNacionalidade.status){
 
-            let result = await atividadeDAO.deleteAtividade(id)
+            let result = await nacionalidadeDAO.deleteNacionalidade(id)
 
             if(result){
 
@@ -194,7 +194,7 @@ const excluirAtividade = async function(id){
             }
 
         }else{
-            return resultBuscarAtividade
+            return resultBuscarNacionalidade
         }
 
     }catch(error){
@@ -203,16 +203,16 @@ const excluirAtividade = async function(id){
 
 }
 
-const validarDados = async function(atividade){
+const validarDados = async function(nacionalidade){
 
     let customMessage = JSON.parse(JSON.stringify(configMenssagens))
 
-    if(atividade.atividade == undefined ||
-       atividade.atividade == '' ||
-       atividade.atividade == null ||
-       atividade.atividade.length > 100){
+    if(nacionalidade.nacionalidade == undefined ||
+       nacionalidade.nacionalidade == '' ||
+       nacionalidade.nacionalidade == null ||
+       nacionalidade.nacionalidade.length > 100){
 
-        customMessage.ERROR_BAD_REQUEST.field = '[ATIVIDADE] INVÁLIDA'
+        customMessage.ERROR_BAD_REQUEST.field = '[NACIONALIDADE] INVÁLIDA'
         return customMessage.ERROR_BAD_REQUEST
 
     }else{
@@ -221,18 +221,18 @@ const validarDados = async function(atividade){
 
 }
 
-const tratarDados = async function(atividade){
+const tratarDados = async function(nacionalidade){
 
-    atividade.atividade = atividade.atividade.replaceAll("'", "")
+    nacionalidade.nacionalidade = nacionalidade.nacionalidade.replaceAll("'", "")
 
-    return atividade
+    return nacionalidade
 
 }
 
 module.exports = {
-    inserirAtividade,
-    listarAtividade,
-    atualizarAtividade,
-    buscarAtividade,
-    excluirAtividade
+    inserirNacionalidade,
+    listarNacionalidade,
+    atualizarNacionalidade,
+    buscarNacionalidade,
+    excluirNacionalidade
 }

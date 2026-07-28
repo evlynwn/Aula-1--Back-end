@@ -232,5 +232,5 @@ module.exports = {
     listarClassificacao,
     atualizarClassificacao,
     buscarClassificacao,
-    excluirClassificacao,
+    excluirClassificacao
 }

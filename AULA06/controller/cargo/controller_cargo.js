@@ -1,28 +1,29 @@
 const configMenssagens = require('../modulo/configMenssagens.js')
-const atividadeDAO = require('../../model/DAO/atividade/atividade.js')
+const cargoDAO = require('../../model/DAO/cargo/cargo.js')
+const controllerCargo = require('../cargo/controller_cargo.js')
 
-const inserirAtividade = async function(atividade, contentType){
+const inserirCargo = async function(cargo, contentType){
 
     let customMessage = JSON.parse(JSON.stringify(configMenssagens))
 
-    try{
+    try {
 
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            let validar = await validarDados(atividade)
+            let validar = await validarDados(cargo)
 
             if(!validar){
 
-                let result = await atividadeDAO.inserirAtividade(await tratarDados(atividade))
+                let result = await cargoDAO.inserirCargo(await tratarDados(cargo))
 
                 if(result){
 
-                    atividade.id = result
+                    cargo.id = result
 
                     customMessage.DEFAULT_MESSAGE.status = customMessage.SUCCESS_CREATED_ITEM.status
                     customMessage.DEFAULT_MESSAGE.status_code = customMessage.SUCCESS_CREATED_ITEM.status_code
                     customMessage.DEFAULT_MESSAGE.message = customMessage.SUCCESS_CREATED_ITEM.message
-                    customMessage.DEFAULT_MESSAGE.response = atividade
+                    customMessage.DEFAULT_MESSAGE.response = cargo
 
                     return customMessage.DEFAULT_MESSAGE
 
@@ -38,19 +39,20 @@ const inserirAtividade = async function(atividade, contentType){
             return customMessage.ERROR_CONTENT_TYPE
         }
 
-    }catch(error){
+    } catch (error) {
+        console.log(error)
         return customMessage.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 
 }
 
-const listarAtividade = async function(){
+const listarCargo = async function(){
 
     let customMessage = JSON.parse(JSON.stringify(configMenssagens))
 
-    try{
+    try {
 
-        let result = await atividadeDAO.selectAllAtividade()
+        let result = await cargoDAO.selectAllCargo()
 
         if(result){
 
@@ -59,7 +61,7 @@ const listarAtividade = async function(){
                 customMessage.DEFAULT_MESSAGE.status = customMessage.SUCCESS_RESPONSE.status
                 customMessage.DEFAULT_MESSAGE.status_code = customMessage.SUCCESS_RESPONSE.status_code
                 customMessage.DEFAULT_MESSAGE.response.count = result.length
-                customMessage.DEFAULT_MESSAGE.response.atividade = result
+                customMessage.DEFAULT_MESSAGE.response.cargo = result
 
                 return customMessage.DEFAULT_MESSAGE
 
@@ -71,38 +73,38 @@ const listarAtividade = async function(){
             return customMessage.ERROR_INTERNAL_SERVER_MODEL
         }
 
-    }catch(error){
+    } catch (error) {
         return customMessage.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 
 }
 
-const atualizarAtividade = async function(id, atividade, contentType){
+const atualizarCargo = async function(id, cargo, contentType){
 
     let customMessage = JSON.parse(JSON.stringify(configMenssagens))
 
-    try{
+    try {
 
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            let resultBuscarAtividade = await buscarAtividade(id)
+            let resultBuscarCargo = await buscarCargo(id)
 
-            if(resultBuscarAtividade.status){
+            if(resultBuscarCargo.status){
 
-                let validar = await validarDados(atividade)
+                let validar = await validarDados(cargo)
 
                 if(!validar){
 
-                    atividade.id = Number(id)
+                    cargo.id = Number(id)
 
-                    let result = await atividadeDAO.updateAtividade(await tratarDados(atividade))
+                    let result = await cargoDAO.updateCargo(await tratarDados(cargo))
 
                     if(result){
 
                         customMessage.DEFAULT_MESSAGE.status = customMessage.SUCCESS_UPDATED_ITEM.status
                         customMessage.DEFAULT_MESSAGE.status_code = customMessage.SUCCESS_UPDATED_ITEM.status_code
                         customMessage.DEFAULT_MESSAGE.message = customMessage.SUCCESS_UPDATED_ITEM.message
-                        customMessage.DEFAULT_MESSAGE.response = atividade
+                        customMessage.DEFAULT_MESSAGE.response = cargo
 
                         return customMessage.DEFAULT_MESSAGE
 
@@ -115,24 +117,24 @@ const atualizarAtividade = async function(id, atividade, contentType){
                 }
 
             }else{
-                return resultBuscarAtividade
+                return resultBuscarCargo
             }
 
         }else{
             return customMessage.ERROR_CONTENT_TYPE
         }
 
-    }catch(error){
+    } catch (error) {
         return customMessage.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 
 }
 
-const buscarAtividade = async function(id){
+const buscarCargo = async function(id){
 
     let customMessage = JSON.parse(JSON.stringify(configMenssagens))
 
-    try{
+    try {
 
         if(String(id).replaceAll(' ','') == '' || id == null || id == undefined || isNaN(id)){
 
@@ -141,7 +143,7 @@ const buscarAtividade = async function(id){
 
         }else{
 
-            let result = await atividadeDAO.selectByIdAtividade(id)
+            let result = await cargoDAO.selectByIdCargo(id)
 
             if(result){
 
@@ -149,7 +151,7 @@ const buscarAtividade = async function(id){
 
                     customMessage.DEFAULT_MESSAGE.status = customMessage.SUCCESS_RESPONSE.status
                     customMessage.DEFAULT_MESSAGE.status_code = customMessage.SUCCESS_RESPONSE.status_code
-                    customMessage.DEFAULT_MESSAGE.response.atividade = result
+                    customMessage.DEFAULT_MESSAGE.response.cargo = result
 
                     return customMessage.DEFAULT_MESSAGE
 
@@ -163,23 +165,23 @@ const buscarAtividade = async function(id){
 
         }
 
-    }catch(error){
+    } catch (error) {
         return customMessage.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 
 }
 
-const excluirAtividade = async function(id){
+const excluirCargo = async function(id){
 
     let customMessage = JSON.parse(JSON.stringify(configMenssagens))
 
-    try{
+    try {
 
-        let resultBuscarAtividade = await buscarAtividade(id)
+        let resultBuscarCargo = await buscarCargo(id)
 
-        if(resultBuscarAtividade.status){
+        if(resultBuscarCargo.status){
 
-            let result = await atividadeDAO.deleteAtividade(id)
+            let result = await cargoDAO.deleteCargo(id)
 
             if(result){
 
@@ -194,25 +196,22 @@ const excluirAtividade = async function(id){
             }
 
         }else{
-            return resultBuscarAtividade
+            return resultBuscarCargo
         }
 
-    }catch(error){
+    } catch (error) {
         return customMessage.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 
 }
 
-const validarDados = async function(atividade){
+const validarDados = async function(cargo){
 
     let customMessage = JSON.parse(JSON.stringify(configMenssagens))
 
-    if(atividade.atividade == undefined ||
-       atividade.atividade == '' ||
-       atividade.atividade == null ||
-       atividade.atividade.length > 100){
+    if(cargo.cargo == undefined || cargo.cargo == '' || cargo.cargo == null || cargo.cargo.length > 100){
 
-        customMessage.ERROR_BAD_REQUEST.field = '[ATIVIDADE] INVÁLIDA'
+        customMessage.ERROR_BAD_REQUEST.field = '[CARGO] INVÁLIDO'
         return customMessage.ERROR_BAD_REQUEST
 
     }else{
@@ -221,18 +220,18 @@ const validarDados = async function(atividade){
 
 }
 
-const tratarDados = async function(atividade){
+const tratarDados = async function(cargo){
 
-    atividade.atividade = atividade.atividade.replaceAll("'", "")
+    cargo.cargo = cargo.cargo.replaceAll("'", "")
 
-    return atividade
+    return cargo
 
 }
 
 module.exports = {
-    inserirAtividade,
-    listarAtividade,
-    atualizarAtividade,
-    buscarAtividade,
-    excluirAtividade
+    inserirCargo,
+    listarCargo,
+    atualizarCargo,
+    buscarCargo,
+    excluirCargo
 }

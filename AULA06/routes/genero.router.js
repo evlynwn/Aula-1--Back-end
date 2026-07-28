@@ -3,7 +3,8 @@ const bodyParser = require('body-parser')
 
 const router = express.Router()
 
-const controllerGenero = require('./controller/gerero/controller_genero.js')
+const controllerGenero = require('../controller/gerero/controller_genero.js')
+const bodyParserJson = require('body-parser').json
 
 router.post('/', bodyParserJson, async function (request, response) {
     let dados = request.body
@@ -11,7 +12,7 @@ router.post('/', bodyParserJson, async function (request, response) {
 
     let result = await controllerGenero.inserirGenero(dados, contentType)
     
-    response.status(result.status_code)
+    response.status(result.status_code)               
 
     response.json(result)
     

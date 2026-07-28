@@ -1,7 +1,7 @@
 const configMenssagens = require('../modulo/configMenssagens.js')
-const atividadeDAO = require('../../model/DAO/atividade/atividade.js')
+const filmeProfissionalDAO = require('../../model/DAO/filme_profissional/filme_profissional.js')
 
-const inserirAtividade = async function(atividade, contentType){
+const inserirFilmeProfissional = async function(filmeProfissional, contentType){
 
     let customMessage = JSON.parse(JSON.stringify(configMenssagens))
 
@@ -9,20 +9,20 @@ const inserirAtividade = async function(atividade, contentType){
 
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            let validar = await validarDados(atividade)
+            let validar = await validarDados(filmeProfissional)
 
             if(!validar){
 
-                let result = await atividadeDAO.inserirAtividade(await tratarDados(atividade))
+                let result = await filmeProfissionalDAO.insertFilmeProfissional(await tratarDados(filmeProfissional))
 
                 if(result){
 
-                    atividade.id = result
+                    filmeProfissional.id = result
 
                     customMessage.DEFAULT_MESSAGE.status = customMessage.SUCCESS_CREATED_ITEM.status
                     customMessage.DEFAULT_MESSAGE.status_code = customMessage.SUCCESS_CREATED_ITEM.status_code
                     customMessage.DEFAULT_MESSAGE.message = customMessage.SUCCESS_CREATED_ITEM.message
-                    customMessage.DEFAULT_MESSAGE.response = atividade
+                    customMessage.DEFAULT_MESSAGE.response = filmeProfissional
 
                     return customMessage.DEFAULT_MESSAGE
 
@@ -44,13 +44,13 @@ const inserirAtividade = async function(atividade, contentType){
 
 }
 
-const listarAtividade = async function(){
+const listarFilmeProfissional = async function(){
 
     let customMessage = JSON.parse(JSON.stringify(configMenssagens))
 
     try{
 
-        let result = await atividadeDAO.selectAllAtividade()
+        let result = await filmeProfissionalDAO.selectAllFilmeProfissional()
 
         if(result){
 
@@ -59,7 +59,7 @@ const listarAtividade = async function(){
                 customMessage.DEFAULT_MESSAGE.status = customMessage.SUCCESS_RESPONSE.status
                 customMessage.DEFAULT_MESSAGE.status_code = customMessage.SUCCESS_RESPONSE.status_code
                 customMessage.DEFAULT_MESSAGE.response.count = result.length
-                customMessage.DEFAULT_MESSAGE.response.atividade = result
+                customMessage.DEFAULT_MESSAGE.response.filmeProfissional = result
 
                 return customMessage.DEFAULT_MESSAGE
 
@@ -77,7 +77,7 @@ const listarAtividade = async function(){
 
 }
 
-const atualizarAtividade = async function(id, atividade, contentType){
+const atualizarFilmeProfissional = async function(id, filmeProfissional, contentType){
 
     let customMessage = JSON.parse(JSON.stringify(configMenssagens))
 
@@ -85,24 +85,24 @@ const atualizarAtividade = async function(id, atividade, contentType){
 
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            let resultBuscarAtividade = await buscarAtividade(id)
+            let resultBuscarFilmeProfissional = await buscarFilmeProfissional(id)
 
-            if(resultBuscarAtividade.status){
+            if(resultBuscarFilmeProfissional.status){
 
-                let validar = await validarDados(atividade)
+                let validar = await validarDados(filmeProfissional)
 
                 if(!validar){
 
-                    atividade.id = Number(id)
+                    filmeProfissional.id = Number(id)
 
-                    let result = await atividadeDAO.updateAtividade(await tratarDados(atividade))
+                    let result = await filmeProfissionalDAO.updateFilmeProfissional(await tratarDados(filmeProfissional))
 
                     if(result){
 
                         customMessage.DEFAULT_MESSAGE.status = customMessage.SUCCESS_UPDATED_ITEM.status
                         customMessage.DEFAULT_MESSAGE.status_code = customMessage.SUCCESS_UPDATED_ITEM.status_code
                         customMessage.DEFAULT_MESSAGE.message = customMessage.SUCCESS_UPDATED_ITEM.message
-                        customMessage.DEFAULT_MESSAGE.response = atividade
+                        customMessage.DEFAULT_MESSAGE.response = filmeProfissional
 
                         return customMessage.DEFAULT_MESSAGE
 
@@ -115,7 +115,7 @@ const atualizarAtividade = async function(id, atividade, contentType){
                 }
 
             }else{
-                return resultBuscarAtividade
+                return resultBuscarFilmeProfissional
             }
 
         }else{
@@ -128,7 +128,7 @@ const atualizarAtividade = async function(id, atividade, contentType){
 
 }
 
-const buscarAtividade = async function(id){
+const buscarFilmeProfissional = async function(id){
 
     let customMessage = JSON.parse(JSON.stringify(configMenssagens))
 
@@ -141,7 +141,7 @@ const buscarAtividade = async function(id){
 
         }else{
 
-            let result = await atividadeDAO.selectByIdAtividade(id)
+            let result = await filmeProfissionalDAO.selectByIdFilmeProfissional(id)
 
             if(result){
 
@@ -149,7 +149,7 @@ const buscarAtividade = async function(id){
 
                     customMessage.DEFAULT_MESSAGE.status = customMessage.SUCCESS_RESPONSE.status
                     customMessage.DEFAULT_MESSAGE.status_code = customMessage.SUCCESS_RESPONSE.status_code
-                    customMessage.DEFAULT_MESSAGE.response.atividade = result
+                    customMessage.DEFAULT_MESSAGE.response.filmeProfissional = result
 
                     return customMessage.DEFAULT_MESSAGE
 
@@ -169,17 +169,17 @@ const buscarAtividade = async function(id){
 
 }
 
-const excluirAtividade = async function(id){
+const excluirFilmeProfissional = async function(id){
 
     let customMessage = JSON.parse(JSON.stringify(configMenssagens))
 
     try{
 
-        let resultBuscarAtividade = await buscarAtividade(id)
+        let resultBuscarFilmeProfissional = await buscarFilmeProfissional(id)
 
-        if(resultBuscarAtividade.status){
+        if(resultBuscarFilmeProfissional.status){
 
-            let result = await atividadeDAO.deleteAtividade(id)
+            let result = await filmeProfissionalDAO.deleteFilmeProfissional(id)
 
             if(result){
 
@@ -194,7 +194,7 @@ const excluirAtividade = async function(id){
             }
 
         }else{
-            return resultBuscarAtividade
+            return resultBuscarFilmeProfissional
         }
 
     }catch(error){
@@ -203,36 +203,36 @@ const excluirAtividade = async function(id){
 
 }
 
-const validarDados = async function(atividade){
+const validarDados = async function(filmeProfissional){
 
     let customMessage = JSON.parse(JSON.stringify(configMenssagens))
 
-    if(atividade.atividade == undefined ||
-       atividade.atividade == '' ||
-       atividade.atividade == null ||
-       atividade.atividade.length > 100){
-
-        customMessage.ERROR_BAD_REQUEST.field = '[ATIVIDADE] INVÁLIDA'
+    if(filmeProfissional.id_filme == undefined || filmeProfissional.id_filme == '' || filmeProfissional.id_filme == null || isNaN(filmeProfissional.id_filme)){
+        customMessage.ERROR_BAD_REQUEST.field = '[ID_FILME] INVÁLIDO'
         return customMessage.ERROR_BAD_REQUEST
-
-    }else{
-        return false
     }
 
+    if(filmeProfissional.id_profissional == undefined || filmeProfissional.id_profissional == '' || filmeProfissional.id_profissional == null || isNaN(filmeProfissional.id_profissional)){
+        customMessage.ERROR_BAD_REQUEST.field = '[ID_PROFISSIONAL] INVÁLIDO'
+        return customMessage.ERROR_BAD_REQUEST
+    }
+
+    if(filmeProfissional.id_cargo == undefined || filmeProfissional.id_cargo == '' || filmeProfissional.id_cargo == null || isNaN(filmeProfissional.id_cargo)){
+        customMessage.ERROR_BAD_REQUEST.field = '[ID_CARGO] INVÁLIDO'
+        return customMessage.ERROR_BAD_REQUEST
+    }
+
+    return false
 }
 
-const tratarDados = async function(atividade){
-
-    atividade.atividade = atividade.atividade.replaceAll("'", "")
-
-    return atividade
-
+const tratarDados = async function(filmeProfissional){
+    return filmeProfissional
 }
 
 module.exports = {
-    inserirAtividade,
-    listarAtividade,
-    atualizarAtividade,
-    buscarAtividade,
-    excluirAtividade
+    inserirFilmeProfissional,
+    listarFilmeProfissional,
+    atualizarFilmeProfissional,
+    buscarFilmeProfissional,
+    excluirFilmeProfissional
 }

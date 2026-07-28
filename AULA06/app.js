@@ -139,13 +139,8 @@ app.delete('/v1/senai/locadora/classificacao/:id', async function (request,respo
     response.json(result)
 })
 
-
-// GÊNERO
-
 const generoRouter = require('./routes/genero.router.js')
 app.use('v1/senai/locadora/genero' , cors(), generoRouter)
-
-
 
 
 app.listen(8080, function(){

@@ -1,15 +1,6 @@
-/***********************
- * 
- * 
- * 
- * ******************************************/
-
-
 const configMenssagens = require('../modolo/configMenssagens.js')
 
 const generoDAO = require('../../model/DAO/genero/genero.js')
-
-
 
 const inserirGenero = async function (genero, contentType){
 
